@@ -1,15 +1,12 @@
 package service;
 
 import java.util.Scanner;
-import java.util.UUID;
 import java.io.File;
-import java.sql.Date;
-import java.util.List;
 import dao.ModalidadeDAO;
 import model.Modalidade;
 import spark.Request;
 import spark.Response;
-import util.Path;
+
 
 public class ModalidadeService {
   private ModalidadeDAO modalidadeDAO = new ModalidadeDAO();
@@ -20,7 +17,7 @@ public class ModalidadeService {
   private final int FORM_ORDERBY_ID = 1;
 
   public ModalidadeService() {
-    makeform();
+    //makeform();
   }
 
   public void makeForm() {
@@ -60,7 +57,7 @@ public class ModalidadeService {
   }
 
   public Object insert(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     String nome = request.queryParams("nome");
     
     String resp = "";
@@ -82,7 +79,7 @@ public class ModalidadeService {
   }
 
   public Object get(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Modalidade modalidade = modalidadeDAO.get(id);
 
     if (modalidade != null) {
@@ -100,7 +97,7 @@ public class ModalidadeService {
   }
 
   public Object getToUpdate(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Modalidade modalidade = modalidadeDAO.get(id);
 
     if (modalidade != null) {
@@ -126,7 +123,7 @@ public class ModalidadeService {
   }
 
   public Object update(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Modalidade modalidade = modalidadeDAO.get(id);
     String resp = "";
 
@@ -140,7 +137,7 @@ public class ModalidadeService {
       resp = "Modalidade (ID " + modalidade.getId() + ") atualizada!";
     } else {
       response.status(404); // 404 Not found
-      resp = "Modalidade (ID " + modalidade.getId() + ") não encontrada!";
+      resp = "Modalidade (ID " + id + ") não encontrada!";
     }
     makeForm();
     return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
@@ -148,7 +145,7 @@ public class ModalidadeService {
   }
 
   public Object delete(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Modalidade modalidade = modalidadeDAO.get(id);
     String resp = "";
 
