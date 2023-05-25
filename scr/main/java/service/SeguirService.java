@@ -1,15 +1,11 @@
 package service;
 
 import java.util.Scanner;
-import java.util.UUID;
 import java.io.File;
-import java.sql.Date;
-import java.util.List;
 import dao.SeguirDAO;
 import model.Seguir;
 import spark.Request;
 import spark.Response;
-import util.Path;
 
 public class SeguirService {
   private SeguirDAO seguirDAO = new SeguirDAO();
@@ -20,7 +16,7 @@ public class SeguirService {
   private final int FORM_ORDERBY_ID = 1;
 
   public SeguirService() {
-    makeform();
+    //makeform();
   }
 
   public void makeForm() {
@@ -60,7 +56,7 @@ public class SeguirService {
   }
 
   public Object insert(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
     
     String resp = "";
 
@@ -81,7 +77,7 @@ public class SeguirService {
   }
 
   public Object get(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
     Seguir seguir = seguirDAO.get(id);
 
     if (seguir != null) {
@@ -99,7 +95,7 @@ public class SeguirService {
   }
 
   public Object getToUpdate(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
     Seguir seguir = seguirDAO.get(id);
 
     if (seguir != null) {
@@ -125,7 +121,7 @@ public class SeguirService {
   }
 
   public Object update(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
     Seguir seguir = seguirDAO.get(id);
     String resp = "";
 
@@ -138,7 +134,7 @@ public class SeguirService {
       resp = "Seguir (ID " + seguir.getUsuarioID() + ") atualizada!";
     } else {
       response.status(404); // 404 Not found
-      resp = "Seguir (ID " + seguir.getUsuarioID() + ") não encontrada!";
+      resp = "Seguir (ID " + id + ") não encontrada!";
     }
     makeForm();
     return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
@@ -146,7 +142,7 @@ public class SeguirService {
   }
 
   public Object delete(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
     Seguir seguir = seguirDAO.get(id);
     String resp = "";
 
