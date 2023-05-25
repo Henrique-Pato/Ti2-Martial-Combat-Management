@@ -1,17 +1,11 @@
-// incompleto
-
 package service;
 
 import java.util.Scanner;
-import java.util.UUID;
 import java.io.File;
-import java.sql.Date;
-import java.util.List;
 import dao.PostagemDAO;
 import model.Postagem;
 import spark.Request;
 import spark.Response;
-import util.Path;
 
 public class PostagemService {
   private PostagemDAO postagemDAO = new PostagemDAO();
@@ -22,7 +16,7 @@ public class PostagemService {
   private final int FORM_ORDERBY_ID = 1;
 
   public PostagemService() {
-    makeform();
+    //makeform();
   }
 
   public void makeForm() {
@@ -62,10 +56,10 @@ public class PostagemService {
   }
 
   public Object insert(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     String conteudo = request.queryParams("conteudo");
-    int Uid = request.params("usuarioID");
-    int Mid = request.params("modalidadeID");
+    int Uid = Integer.parseInt(request.params("usuarioID"));
+    int Mid = Integer.parseInt(request.params("modalidadeID"));
 
     String resp = "";
 
@@ -87,7 +81,7 @@ public class PostagemService {
   }
 
   public Object get(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Postagem postagem = postagemDAO.get(id);
 
     if (postagem != null) {
@@ -106,7 +100,7 @@ public class PostagemService {
   }
 
   public Object getToUpdate(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Postagem postagem = postagemDAO.get(id);
 
     if (postagem != null) {
@@ -133,14 +127,13 @@ public class PostagemService {
   }
 
   public Object update(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Postagem postagem = postagemDAO.get(id);
     String resp = "";
 
     if (postagem != null) {
       postagem.setConteudo(request.queryParams("conteudo"));
       postagem.setFoto(request.queryParams("foto"));
-      postagem.setModalidadeID(UUID.parse(request.queryParams("foto")));
       
 
       postagemDAO.update(postagem);
@@ -148,7 +141,7 @@ public class PostagemService {
       resp = "Postagem (ID " + postagem.getId() + ") atualizada!";
     } else {
       response.status(404); // 404 Not found
-      resp = "Postagem (ID " + postagem.getId() + ") não encontrada!";
+      resp = "Postagem (ID " + id + ") não encontrada!";
     }
     makeForm();
     return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
@@ -156,7 +149,7 @@ public class PostagemService {
   }
 
   public Object delete(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Postagem postagem = postagemDAO.get(id);
     String resp = "";
 
