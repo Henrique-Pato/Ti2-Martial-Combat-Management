@@ -1,15 +1,12 @@
 package service;
 
 import java.util.Scanner;
-import java.util.UUID;
 import java.io.File;
-import java.sql.Date;
-import java.util.List;
 import dao.ReacaoDAO;
 import model.Reacao;
 import spark.Request;
 import spark.Response;
-import util.Path;
+
 
 public class ReacaoService {
   private ReacaoDAO reacaoDAO = new ReacaoDAO();
@@ -20,7 +17,7 @@ public class ReacaoService {
   private final int FORM_ORDERBY_ID = 1;
 
   public ReacaoService() {
-    makeform();
+    //makeform();
   }
 
   public void makeForm() {
@@ -60,8 +57,8 @@ public class ReacaoService {
   }
 
   public Object insert(Request request, Response response) {
-    int Pid = request.params("postagemID");
-    int Uid = request.params("usuarioID");
+    int Pid = Integer.parseInt(request.params("postagemID"));
+    int Uid = Integer.parseInt(request.params("usuarioID"));
 
     String resp = "";
 
@@ -82,7 +79,7 @@ public class ReacaoService {
   }
 
   public Object get(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("usuarioID"));
     Reacao reacao = reacaoDAO.get(id);
 
     if (reacao != null) {
@@ -100,7 +97,7 @@ public class ReacaoService {
   }
 
   public Object getToUpdate(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("usuarioID"));
     Reacao reacao = reacaoDAO.get(id);
 
     if (reacao != null) {
@@ -126,7 +123,7 @@ public class ReacaoService {
   }
 
   public Object update(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("usuarioID"));
     Reacao reacao = reacaoDAO.get(id);
     String resp = "";
 
@@ -138,7 +135,7 @@ public class ReacaoService {
       resp = "Reacao (ID " + reacao.getUsuarioID()+ ") atualizada!";
     } else {
       response.status(404); // 404 Not found
-      resp = "Reacao (ID " + reacao.getUsuarioID() + ") não encontrada!";
+      resp = "Reacao (ID " + id + ") não encontrada!";
     }
     makeForm();
     return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
@@ -146,7 +143,7 @@ public class ReacaoService {
   }
 
   public Object delete(Request request, Response response) {
-    int id = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("usuarioID"));
     Reacao reacao = reacaoDAO.get(id);
     String resp = "";
 
