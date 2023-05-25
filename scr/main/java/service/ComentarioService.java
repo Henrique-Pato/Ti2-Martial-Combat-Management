@@ -1,15 +1,15 @@
 package service;
 
+import java.util.Date;
 import java.util.Scanner;
-import java.util.UUID;
 import java.io.File;
-import java.sql.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import dao.ComentarioDAO;
 import model.Comentario;
 import spark.Request;
 import spark.Response;
-import util.Path;
+
 
 public class ComentarioService {
   private ComentarioDAO comentarioDAO = new ComentarioDAO();
@@ -21,7 +21,7 @@ public class ComentarioService {
 
 
   public ComentarioService() {
-    makeform();
+    //makeform();
   }
 
   public void makeForm() {
@@ -61,9 +61,9 @@ public class ComentarioService {
   }
 
   public Object insert(Request request, Response response) {
-    int id = request.params("ID");
-    int Pid = request.params("postagemID");
-    int Uid = request.params("usuarioID");
+    int id = Integer.parseInt(request.params("ID"));
+    int Pid = Integer.parseInt(request.params("postagemID"));
+    int Uid = Integer.parseInt(request.params("usuarioID"));
 
     String resp = "";
 
@@ -84,7 +84,7 @@ public class ComentarioService {
   }
 
   public Object get(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Comentario comentario = comentarioDAO.get(id);
 
     if (comentario != null) {
@@ -102,7 +102,7 @@ public class ComentarioService {
   }
 
   public Object getToUpdate(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Comentario comentario = comentarioDAO.get(id);
 
     if (comentario != null) {
@@ -128,14 +128,22 @@ public class ComentarioService {
   }
 
   public Object update(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Comentario comentario = comentarioDAO.get(id);
     String resp = "";
 
     if (comentario != null) {
       comentario.setPostagemID(Integer.parseInt(request.queryParams("postagemID")));
       comentario.setUsuarioID(Integer.parseInt(request.queryParams("usuarioID")));
-      comentario.setDate(Date.parse(request.queryParams("date")));
+      
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      try {
+      Date data = dateFormat.parse(request.queryParams("date"));
+      comentario.setDate(data);
+      } catch (ParseException e) {
+      e.printStackTrace();
+      }
+      
       comentario.setConteudo(request.queryParams("conteudo"));
       comentario.setConteudo(request.queryParams("resposta"));
 
@@ -144,7 +152,7 @@ public class ComentarioService {
       resp = "Comentario (ID " + comentario.getId() + ") atualizada!";
     } else {
       response.status(404); // 404 Not found
-      resp = "Comentario (ID " + comentario.getId() + ") não encontrada!";
+      resp = "Comentario (ID " + id + ") não encontrada!";
     }
     makeForm();
     return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
@@ -152,7 +160,7 @@ public class ComentarioService {
   }
 
   public Object delete(Request request, Response response) {
-    int id = request.params("ID");
+    int id = Integer.parseInt(request.params("ID"));
     Comentario comentario = comentarioDAO.get(id);
     String resp = "";
 
