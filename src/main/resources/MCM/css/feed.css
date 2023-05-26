@@ -170,7 +170,7 @@ header section::before {
     position: absolute;
     width: 100%;
     height: 200px;
-    background: url(images/dojo2.jpg)no-repeat center center/cover;
+    background: url(../images/dojo2.jpg)no-repeat center center/cover;
     top: 8%;
     border-radius: 0px 0px 20px 0px;
     opacity: .9;
