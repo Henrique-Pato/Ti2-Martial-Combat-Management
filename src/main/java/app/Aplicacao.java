@@ -23,7 +23,7 @@ public class Aplicacao {
   public static void main(String[] args) {
     port(6789);
 
-    staticFiles.location("/");
+    staticFiles.location("/public");
 
     post("/usuario", (request, response) -> usuarioService.insert(request, response));
     get("/usuario/:ID", (request, response) -> usuarioService.get(request, response));
