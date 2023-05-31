@@ -6,7 +6,7 @@
         <title>Página Inicial - Martial Art Combat Management</title>
         
         <link rel="stylesheet" href="../css/style.css">
-        
+
     </head>
     <body>
         <header>
@@ -16,7 +16,7 @@
             </div>
 
             <div id="linksLogin">
-                <p class="linkBotao"><a href="signup.html">Sign Up</a></p>
+                <p class="linkBotao"><a href="/cadastro">Sign Up</a></p>
             </div>
 
         </header>
@@ -24,7 +24,8 @@
         
         <div class="cadastro container">
             <h1>Cadastro de Usuários</h1>
-            <form method="post" action="">                 
+
+            <form method="post" action="/cadastro" id="cadastroForm" method="POST">                 
                 <p> 
                   <label for="nome_cad">Nome</label>
                   <input id="nome_cad" name="nome_cad" required="required" type="text" placeholder="Nome" />
@@ -46,12 +47,15 @@
                  
                 <p class="link">  
                   Já tem conta?
-                  <a href="login.html"> Ir para Login </a>
+                  <a href="/login"> Ir para Login </a>
                 </p>
               </form>
             
         </div>
     
+        <!--
+          <script type="text/javascript" src="../js/cadastrar.js"></script>
+        -->
     </body>
 </html>
     

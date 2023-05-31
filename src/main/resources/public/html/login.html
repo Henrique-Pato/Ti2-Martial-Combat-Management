@@ -16,7 +16,7 @@
             </div>
 
             <div id="linksLogin">
-                <p class="linkBotao"><a href="signup.html">Sign Up</a></p>
+                <p class="linkBotao"><a href="/cadastro">Sign Up</a></p>
             </div>
 
         </header>
@@ -26,12 +26,12 @@
             <h1>Login</h1>
 
             <div>
-                <form>  
+                <form action="/login" method="POST">  
                     <div class="container">   
                         <label>Username : </label>   
-                        <input type="text" placeholder="Enter Username" name="username" required>  
+                        <input type="text" placeholder="Enter Username" name="nome_cad" id="nome_cad" required>  
                         <label>Password : </label>   
-                        <input type="password" placeholder="Enter Password" name="password" required>  
+                        <input type="password" placeholder="Enter Password" name="senha_cad" id="senha_cad" required>  
                         <button type="submit">Login</button>   
                         <input type="checkbox" checked="checked"> Remember me   
                         <!--<button type="button" class="cancelbtn"> Cancel</button>-->   

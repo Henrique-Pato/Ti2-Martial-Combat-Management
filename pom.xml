@@ -15,11 +15,20 @@
     			<artifactId>postgresql</artifactId>
     			<version>42.6.0</version>
 		</dependency>		
+ 		
  		<dependency>
         		<groupId>com.sparkjava</groupId>
         		<artifactId>spark-core</artifactId>
        			<version>2.9.4</version>
    		</dependency>
+   		
+   		<!--
+   		<dependency>
+    			<groupId>com.sparkjava</groupId>
+    			<artifactId>spark-template-mustache</artifactId>
+    			<version>2.9.4</version>   
+  		</dependency>
+   		-->
    	 	<dependency> 
   			<groupId>org.slf4j</groupId>
   			<artifactId>slf4j-api</artifactId>
@@ -31,5 +40,6 @@
     		<artifactId>logback-classic</artifactId>
    			<version>1.4.7</version> <!-- substitua pela versão correta do Logback -->
 		</dependency>
+		
  	 </dependencies>
   </project>

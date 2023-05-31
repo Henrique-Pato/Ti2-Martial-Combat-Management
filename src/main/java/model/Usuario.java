@@ -35,7 +35,7 @@ public class Usuario {
         this.email = email;
         this.hashedPassword = hashedPassword;
         Random random = new Random();
-        this.id = random.nextInt();
+        this.id = Math.abs(random.nextInt());     
     }
 
     //Gets
