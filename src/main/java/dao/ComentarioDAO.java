@@ -53,10 +53,9 @@ public class ComentarioDAO extends DAO {
       st.setObject(1, comentario.getId());
       st.setObject(2, comentario.getPostagemID());
       st.setObject(3, comentario.getUsuarioID());
-      st.setDate(4, comentario.getDate());
+      st.setObject(4, comentario.getDate());
       st.setString(5, comentario.getConteudo());
       st.setString(6, comentario.getResposta());
-
 
       st.executeUpdate();
       st.close();
@@ -188,7 +187,7 @@ public class ComentarioDAO extends DAO {
       st.setObject(1, comentario.getId());
       st.setObject(2, comentario.getPostagemID());
       st.setObject(3, comentario.getUsuarioID());
-      st.setDate(4, comentario.getDate());
+      st.setObject(4, comentario.getDate());
       st.setString(5, comentario.getConteudo());
       st.setString(6, comentario.getResposta());
 
