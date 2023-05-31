@@ -11,6 +11,12 @@ import service.ReacaoService;
 import service.SeguirService;
 import service.UsuarioService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+
+
 public class Aplicacao {
 
   private static UsuarioService usuarioService = new UsuarioService();
@@ -21,11 +27,37 @@ public class Aplicacao {
   private static ReacaoService reacaoService = new ReacaoService();
 
   public static void main(String[] args) {
-    port(6789);
+    port(2223);
 
     staticFiles.location("/public");
-
-    post("/usuario", (request, response) -> usuarioService.insert(request, response));
+    
+    get("/cadastro", (req, res) -> {
+    	  try {
+    	    String filePath = Paths.get("src/main/resources/public/html/signup.html").toAbsolutePath().toString();
+    	    InputStream fileInputStream = new FileInputStream(filePath);
+    	    res.type("text/html");
+    	    return fileInputStream;
+    	  } catch (IOException e) {
+    	    e.printStackTrace();
+    	    return "Erro ao carregar a página de cadastro";
+    	  }
+    	});
+    
+    get("/login", (req, res) -> {
+  	  try {
+  	    String filePath = Paths.get("src/main/resources/public/html/login.html").toAbsolutePath().toString();
+  	    InputStream fileInputStream = new FileInputStream(filePath);
+  	    res.type("text/html");
+  	    return fileInputStream;
+  	  } catch (IOException e) {
+  	    e.printStackTrace();
+  	    return "Erro ao carregar a página de login";
+  	  }
+  	});
+    
+    post("/cadastro", (request, response) -> usuarioService.insert(request, response));
+    
+    
     get("/usuario/:ID", (request, response) -> usuarioService.get(request, response));
     get("/usuario/update/:ID", (request, response) -> usuarioService.update(request, response));
     get("/usuario/delete/:ID", (request, response) -> usuarioService.delete(request, response));

@@ -64,7 +64,7 @@ public class UsuarioService {
 
   }
   
-  public String MD5(String texto) {
+   public String MD5(String texto) {
 	  String resp = "";
 	  MessageDigest m = null;
 	try {
@@ -81,6 +81,15 @@ public class UsuarioService {
     String nome = request.queryParams("nome_cad");
     String email = request.queryParams("email_cad");
     String hashedPassword = request.queryParams("senha_cad");
+    
+    System.out.println("#####################################");
+    System.out.println("#####################################");
+    System.out.println(nome);
+    System.out.println(email);
+    System.out.println(hashedPassword);
+    System.out.println("#####################################");
+    System.out.println("#####################################");
+    
     hashedPassword = MD5(hashedPassword);
 
     String resp = "";
