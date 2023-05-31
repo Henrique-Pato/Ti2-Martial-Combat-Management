@@ -96,40 +96,23 @@ public class UsuarioService {
 
 		hashedPassword = MD5(hashedPassword);
 
-		String resp = "";
-
 		Usuario usuario = new Usuario(nome, email, hashedPassword);
 
 		if (usuarioDAO.create(usuario) == true) {
-			resp = "Usuario (" + nome + ") inserido!";
+			String authToken = "logado";
+			
 			response.status(201); // 201 Created
+			response.cookie("authToken", authToken);
+			response.redirect("/feed");
+			
 		} else {
-			resp = "Usuario (" + nome + ") não inserido!";
 			response.status(404); // 404 Not found
 		}
-
-		makeForm();
-		form = form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-				"<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
-
-		return form;
+		return null;
 	}
 
-	/*
-	 * public Object get(Request request, Response response) { int id =
-	 * Integer.parseInt(request.params("ID")); Usuario usuario = usuarioDAO.get(id);
-	 * 
-	 * if (usuario != null) { response.status(200); // success makeForm(FORM_DETAIL,
-	 * usuario, FORM_ORDERBY_ID); } else { response.status(404); // 404 Not found
-	 * String resp = "Usuario " + id + " não encontrado."; makeForm(); form.
-	 * replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-	 * "<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">"); }
-	 * 
-	 * return form; }
-	 * 
-	 */
 
-//get do usuario service
+	// get do usuário service
 	public Object get(Request request, Response response) {
 		String nome = request.queryParams("nome_cad");
 		String hashedPassword = request.queryParams("senha_cad");
@@ -140,30 +123,26 @@ public class UsuarioService {
 
 		if (usuario != null) {
 			response.status(200); // success
-			//makeForm(FORM_DETAIL, usuario, FORM_ORDERBY_ID);
-			//makeForm();
-			
-			
-			try {
-				String filePath = Paths.get("src/main/resources/public/html/feed.html").toAbsolutePath().toString();
-				InputStream fileInputStream = new FileInputStream(filePath);
-				response.type("text/html");
-				return fileInputStream;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return "Erro ao carregar a página de login";
-			}
+		
+			//String authToken = generateAuthToken(nome);
+			String authToken = "logado";
+			response.cookie("authToken",authToken);
+			response.redirect("/feed");			
+			//response.redirect("/feed" + usuario.getId());
 		}	
 			
 		else {
 			response.status(404); // 404 Not found
-			String resp = "Usuario " + nome + " não encontrado.";
-			makeForm();
-			form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-					"<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
+			
+			System.out.println("#####################################");
+			System.out.println("Tentativa de login fracassada usuário: " + nome);
+			System.out.println("#####################################");
+			
+			response.redirect("/login"); // Se o login não for bem-sucedido, irá retornar para a página de login novamente
+			
 		}
 
-		return form;
+		return null;
 	}
 
 	public Object getToUpdate(Request request, Response response) {

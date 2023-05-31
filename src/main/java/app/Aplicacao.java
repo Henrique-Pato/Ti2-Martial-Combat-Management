@@ -10,6 +10,7 @@ import service.PostagemService;
 import service.ReacaoService;
 import service.SeguirService;
 import service.UsuarioService;
+import spark.Route;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,11 +32,11 @@ public class Aplicacao {
 
     staticFiles.location("/public");
     
-    get("/cadastro", (req, res) -> {
+    get("/cadastro", (request, response) -> {
     	  try {
     	    String filePath = Paths.get("src/main/resources/public/html/signup.html").toAbsolutePath().toString();
     	    InputStream fileInputStream = new FileInputStream(filePath);
-    	    res.type("text/html");
+    	    response.type("text/html");
     	    return fileInputStream;
     	  } catch (IOException e) {
     	    e.printStackTrace();
@@ -43,27 +44,56 @@ public class Aplicacao {
     	  }
     	});
     
-    get("/login", (req, res) -> {
-  	  try {
-  	    String filePath = Paths.get("src/main/resources/public/html/login.html").toAbsolutePath().toString();
-  	    InputStream fileInputStream = new FileInputStream(filePath);
-  	    res.type("text/html");
-  	    return fileInputStream;
-  	  } catch (IOException e) {
-  	    e.printStackTrace();
-  	    return "Erro ao carregar a página de login";
-  	  }
-  	});
+    get("/login", (request, response) -> {
+    	String authToken = request.cookie("authToken");
+    	if(authToken != null && authToken.equals("logado")) {
+    		response.redirect("/feed");
+    	}    	
+    	else {	
+    		try {
+        		String filePath = Paths.get("src/main/resources/public/html/login.html").toAbsolutePath().toString();
+          	    InputStream fileInputStream = new FileInputStream(filePath);
+          	    response.type("text/html");
+          	    return fileInputStream;
+        	}catch (IOException e) {
+          		  e.printStackTrace();
+          		  return "Erro ao carregar a página de login";
+          	 }
+    	}
+    	return null;
+    	});
+    
     
     post("/cadastro", (request, response) -> usuarioService.insert(request, response));
     post("/login", (request, response) -> usuarioService.get(request, response));
     
-    
-    
-    
-    
-    
-    
+    get("/feed", (request, response) -> {
+    	String authToken = request.cookie("authToken");
+    	
+    	if(authToken != null && authToken.equals("logado")) {
+    		try {
+        		String filePath = Paths.get("src/main/resources/public/html/feed.html").toAbsolutePath().toString();
+          	    InputStream fileInputStream = new FileInputStream(filePath);
+          	    response.type("text/html");
+          	    return fileInputStream;
+        	}catch (IOException e) {
+          		  e.printStackTrace();
+          		  return "Erro ao carregar a página de feed";
+          	  }
+    	}
+    	
+    	else {
+    		response.redirect("/login");
+    	}
+    	return null;
+      	});
+  	
+    get("/logout", (request, response) -> {
+    	response.removeCookie("authToken");
+    	response.redirect("/login");
+    	return null;
+    });
+  
     
     
     get("/usuario/:ID", (request, response) -> usuarioService.get(request, response));
@@ -100,6 +130,5 @@ public class Aplicacao {
     post("/reacao/update/:usuarioID", (request, response) -> reacaoService.update(request, response));
     post("/reacao/delete/:usuarioID", (request, response) -> reacaoService.delete(request, response));
     get("/reacao", (request, response) -> reacaoService.getAll(request, response));
-
   }
 }
