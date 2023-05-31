@@ -48,8 +48,6 @@ public class UsuarioDAO extends DAO {
 		try {
 			String sql = "INSERT INTO Usuario (ID, nome, senha, email) VALUES (?, ?, ?, ?)";
 
-			// String sql = "INSERT INTO Usuario (ID, nome, senha, email) VALUES ( 1234,
-			// 'Arthur', 'XXXXXX', 'af@gmail.com')";
 			PreparedStatement st = conexao.prepareStatement(sql);
 
 			st.setInt(1, usuario.getId());
