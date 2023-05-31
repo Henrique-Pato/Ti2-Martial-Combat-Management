@@ -56,6 +56,14 @@ public class Aplicacao {
   	});
     
     post("/cadastro", (request, response) -> usuarioService.insert(request, response));
+    post("/login", (request, response) -> usuarioService.get(request, response));
+    
+    
+    
+    
+    
+    
+    
     
     
     get("/usuario/:ID", (request, response) -> usuarioService.get(request, response));

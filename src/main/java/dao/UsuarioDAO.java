@@ -10,243 +10,269 @@ import java.util.List;
 import model.Usuario;
 
 /**
- * UsuarioDAO: herda DAO e utiliza model Usuario.
- * Realiza insercao, atualizacao, exclusao e recuperacao
- * de usuarios do banco de dados com consultas SQL.
+ * UsuarioDAO: herda DAO e utiliza model Usuario. Realiza insercao, atualizacao,
+ * exclusao e recuperacao de usuarios do banco de dados com consultas SQL.
  * 
  * @author Henrique Pato Magalhães
  * @version 1 20/04/23
  */
 public class UsuarioDAO extends DAO {
-	
+
 	int lastID;
-  /**
-   * Construtor da classe: faz conexao com <code>DAO</code>
-   */
-  public UsuarioDAO() {
-    super();
-    conectar();
-  }
 
-  /**
-   * Encerra conexao com <code>DAO</code>
-   */
-  public void finalize() {
-    close();
-  }
+	/**
+	 * Construtor da classe: faz conexao com <code>DAO</code>
+	 */
+	public UsuarioDAO() {
+		super();
+		conectar();
+	}
 
-  /**
-   * Insere usuario no banco de dados
-   * 
-   * @param usuario <code>Usuario</code> a ser inserida
-   * @return <code>boolean</code> status
-   *         <code>true</code> se conseguir inserir
-   *         <code>false</code> se nao conseguir
-   */
-  public boolean create(Usuario usuario) {
-    boolean status = false;
+	/**
+	 * Encerra conexao com <code>DAO</code>
+	 */
+	public void finalize() {
+		close();
+	}
 
-    try {
-      String sql = "INSERT INTO Usuario (ID nome, senha, email) VALUES (?, ?, ?, ?)";
+	/**
+	 * Insere usuario no banco de dados
+	 * 
+	 * @param usuario <code>Usuario</code> a ser inserida
+	 * @return <code>boolean</code> status <code>true</code> se conseguir inserir
+	 *         <code>false</code> se nao conseguir
+	 */
+	public boolean create(Usuario usuario) {
+		boolean status = false;
 
-      PreparedStatement st = conexao.prepareStatement(sql);
-      st.setObject(1, usuario.getId());
-      st.setString(2, usuario.getNome());
-      st.setString(3, usuario.getHashedPassword());
-      st.setString(4, usuario.getEmail());
-      st.executeUpdate();
-      st.close();
+		try {
+			String sql = "INSERT INTO Usuario (ID, nome, senha, email) VALUES (?, ?, ?, ?)";
 
-      status = true;
-    } catch (SQLException u) {
-      throw new RuntimeException(u);
-    }
+			// String sql = "INSERT INTO Usuario (ID, nome, senha, email) VALUES ( 1234,
+			// 'Arthur', 'XXXXXX', 'af@gmail.com')";
+			PreparedStatement st = conexao.prepareStatement(sql);
 
-    return status;
-  }
+			st.setInt(1, usuario.getId());
+			st.setString(2, usuario.getNome());
+			st.setString(3, usuario.getHashedPassword());
+			st.setString(4, usuario.getEmail());
 
-  /**
-   * Recupera usuario do banco de dados pelo id
-   * 
-   * @param username <code>int</code> identificador do usuario
-   * @return <code>Usuario</code> recuperada
-   */
-  public Usuario get(int id) {
-    Usuario usuario = null;
+			st.executeUpdate();
+			st.close();
 
-    try {
-      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      String sql = "SELECT * FROM Usuario WHERE ID= '"+id+"'";
-      ResultSet rs = st.executeQuery(sql);
+			status = true;
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
 
-      if (rs.next()) {
-        
-        usuario = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
-      }
+		return status;
+	}
 
-      st.close();
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-    }
+	/**
+	 * Recupera usuario do banco de dados pelo id
+	 * 
+	 * @param username <code>int</code> identificador do usuario
+	 * @return <code>Usuario</code> recuperada
+	 */
 
-    return usuario;
-  }
+	// get com nome e senha
+	  public Usuario get(String nome, String senha) {
+	    Usuario usuario = null;
 
-  /**
-   * Chama funcao <code>get(String orderBy)</code>
-   * passando orderBy nulo
-   * 
-   * @return <code>List<Usuario></code> lista de usuarios nao ordenada
-   */
-  public List<Usuario> get() {
-    return getList("");
-  }
+	    try {
+	      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	      String sql = "SELECT * FROM Usuario WHERE nome= '"+nome+"' AND senha= '"+senha+"'" ;
+	      ResultSet rs = st.executeQuery(sql);
 
-  /**
-   * Chama funcao <code>get(String orderBy)</code>
-   * passando nome como orderBy
-   * 
-   * @return <code>List<nome></code> lista de usuarios ordenada pelo nome
-   */
-  public List<Usuario> getOrderBynome() {
-    return getList("nome");
-  }
+	      if (rs.next()) {
+	        
+	        usuario = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+	      }
 
-  /**
-   * Ordena lista de usuarios pelo orderBy solicitado
-   * 
-   * @param orderBy <code>String</code> chave de ordenacao
-   * @return <code>List<Usuario></code> lista de usuarios
-   */
-  private List<Usuario> getList(String orderBy) {
-    List<Usuario> usuarios = new ArrayList<Usuario>();
+	      st.close();
+	    } catch (Exception e) {
+	      System.err.println(e.getMessage());
+	    }
 
-    try {
-      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      String sql = "SELECT * FROM Usuario" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
-      ResultSet rs = st.executeQuery(sql);
+	    return usuario;
+	  }
 
-      while (rs.next()) {
-        
-        Usuario u = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+	// get com id
+	  public Usuario get(int id) {
+		    Usuario usuario = null;
 
-        usuarios.add(u);
-      }
+		    try {
+		      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		      String sql = "SELECT * FROM Usuario WHERE nome= '"+id+"'" ;
+		      ResultSet rs = st.executeQuery(sql);
 
-      st.close();
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-    }
+		      if (rs.next()) {
+		        
+		        usuario = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+		      }
 
-    return usuarios;
-  }
+		      st.close();
+		    } catch (Exception e) {
+		      System.err.println(e.getMessage());
+		    }
 
-  public Usuario[] list(int id) {
-    Usuario[] usuarios = new Usuario[100];
+		    return usuario;
+		  }
 
-    try {
-      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      String sql = "SELECT * FROM Usuario WHERE ID=" + id;
-      ResultSet rs = st.executeQuery(sql);
+	/**
+	 * Chama funcao <code>get(String orderBy)</code> passando orderBy nulo
+	 * 
+	 * @return <code>List<Usuario></code> lista de usuarios nao ordenada
+	 */
+	public List<Usuario> get() {
+		return getList("");
+	}
 
-      int i = 0;
-      while (rs.next()) {
-        
-        usuarios[i] = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+	/**
+	 * Chama funcao <code>get(String orderBy)</code> passando nome como orderBy
+	 * 
+	 * @return <code>List<nome></code> lista de usuarios ordenada pelo nome
+	 */
+	public List<Usuario> getOrderBynome() {
+		return getList("nome");
+	}
 
-        i++;
-      }
+	/**
+	 * Ordena lista de usuarios pelo orderBy solicitado
+	 * 
+	 * @param orderBy <code>String</code> chave de ordenacao
+	 * @return <code>List<Usuario></code> lista de usuarios
+	 */
+	private List<Usuario> getList(String orderBy) {
+		List<Usuario> usuarios = new ArrayList<Usuario>();
 
-      st.close();
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-    }
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String sql = "SELECT * FROM Usuario" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
+			ResultSet rs = st.executeQuery(sql);
 
-    return usuarios;
-  }
+			while (rs.next()) {
 
-  /**
-   * Atualiza usuario no banco de dados
-   * 
-   * @param usuario <code>Usuario</code> a ser inserida
-   * @return <code>boolean</code> status
-   *         <code>true</code> se conseguir atualizar
-   *         <code>false</code> se nao conseguir
-   */
-  public boolean update(Usuario usuario) {
-    boolean status = false;
+				Usuario u = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"),
+						rs.getString("senha"));
 
-    try {
-      String sql = "UPDATE Usuario SET email=?, senha=" + usuario.getHashedPassword()
-          + " , sobrenome=?, descrição=?, nascimento=?, idade=?, foto=? WHERE nome =" + usuario.getNome();
+				usuarios.add(u);
+			}
 
-      PreparedStatement st = conexao.prepareStatement(sql);
-      st.setString(1, usuario.getEmail());
-      st.setString(2, usuario.getSobrenome());
-      st.setString(3, usuario.getDescricao());
-      st.setObject(4, usuario.getNascimento());
-      st.setInt(5, usuario.getIdade());
-      st.setObject(6, usuario.getFoto());
-      st.executeUpdate();
-      st.close();
+			st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 
-      status = true;
-    } catch (SQLException u) {
-      throw new RuntimeException(u);
-    }
+		return usuarios;
+	}
 
-    return status;
-  }
+	public Usuario[] list(int id) {
+		Usuario[] usuarios = new Usuario[100];
 
-  /**
-   * Deleta usuario com nome passado do banco de dados
-   * 
-   * @param nome <code>String</code> identificador do usuario
-   * @return <code>boolean</code> status
-   *         <code>true</code> se conseguir deletar
-   *         <code>false</code> se nao conseguir
-   */
-  public boolean delete(int id) {
-    boolean status = false;
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String sql = "SELECT * FROM Usuario WHERE ID=" + id;
+			ResultSet rs = st.executeQuery(sql);
 
-    try {
-      Statement st = conexao.createStatement();
-      st.executeUpdate("DELETE FROM Usuario WHERE ID = " + id);
-      st.close();
+			int i = 0;
+			while (rs.next()) {
 
-      status = true;
-    } catch (SQLException u) {
-      throw new RuntimeException(u);
-    }
+				usuarios[i] = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"),
+						rs.getString("senha"));
 
-    return status;
-  }
+				i++;
+			}
 
-  /**
-   * Busca usuario a partir de um nome
-   * 
-   * @param nome <code>String</code> identificador do usuario
-   * @return <code>Usuario</code> status
-   */
-  public Usuario[] search(String query) {
-    Usuario[] usuarios = new Usuario[100];
+			st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 
-    try {
-      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      String sql = "SELECT * FROM Usuario WHERE nome=" + query;
-      ResultSet rs = st.executeQuery(sql);
+		return usuarios;
+	}
 
-      int i = 0;
-      while (rs.next()) {
-        usuarios[i] = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+	/**
+	 * Atualiza usuario no banco de dados
+	 * 
+	 * @param usuario <code>Usuario</code> a ser inserida
+	 * @return <code>boolean</code> status <code>true</code> se conseguir atualizar
+	 *         <code>false</code> se nao conseguir
+	 */
+	public boolean update(Usuario usuario) {
+		boolean status = false;
 
-        i++;
-      }
-      st.close();
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-    }
+		try {
+			String sql = "UPDATE Usuario SET email=?, senha=" + usuario.getHashedPassword()
+					+ " , sobrenome=?, descrição=?, nascimento=?, idade=?, foto=? WHERE nome =" + usuario.getNome();
 
-    return usuarios;
-  }
+			PreparedStatement st = conexao.prepareStatement(sql);
+			st.setString(1, usuario.getEmail());
+			st.setString(2, usuario.getSobrenome());
+			st.setString(3, usuario.getDescricao());
+			st.setObject(4, usuario.getNascimento());
+			st.setInt(5, usuario.getIdade());
+			st.setObject(6, usuario.getFoto());
+			st.executeUpdate();
+			st.close();
+
+			status = true;
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
+
+		return status;
+	}
+
+	/**
+	 * Deleta usuario com nome passado do banco de dados
+	 * 
+	 * @param nome <code>String</code> identificador do usuario
+	 * @return <code>boolean</code> status <code>true</code> se conseguir deletar
+	 *         <code>false</code> se nao conseguir
+	 */
+	public boolean delete(int id) {
+		boolean status = false;
+
+		try {
+			Statement st = conexao.createStatement();
+			st.executeUpdate("DELETE FROM Usuario WHERE ID = " + id);
+			st.close();
+
+			status = true;
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
+
+		return status;
+	}
+
+	/**
+	 * Busca usuario a partir de um nome
+	 * 
+	 * @param nome <code>String</code> identificador do usuario
+	 * @return <code>Usuario</code> status
+	 */
+	public Usuario[] search(String query) {
+		Usuario[] usuarios = new Usuario[100];
+
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String sql = "SELECT * FROM Usuario WHERE nome=" + query;
+			ResultSet rs = st.executeQuery(sql);
+
+			int i = 0;
+			while (rs.next()) {
+				usuarios[i] = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"),
+						rs.getString("senha"));
+
+				i++;
+			}
+			st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
+		return usuarios;
+	}
 }
