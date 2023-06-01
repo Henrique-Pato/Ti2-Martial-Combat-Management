@@ -46,15 +46,14 @@ public class PostagemDAO extends DAO {
         boolean status = false;
 
         try {
-            String sql = "INSERT INTO Postagem (ID, conteudo, foto, modalidadeID, data, usuarioID) VALUES (?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO Postagem (ID, conteudo, modalidadeID, data, usuarioID) VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement st = conexao.prepareStatement(sql);
-            st.setObject(1, postagem.getId());
+            st.setInt(1, postagem.getId());
             st.setString(2, postagem.getConteudo());
-            st.setString(3, postagem.getFoto());
-            st.setObject(4, postagem.getModalidadeID());
-            st.setDate(5, postagem.getDate());
-            st.setObject(6, postagem.getUsuarioID());
+            st.setInt(3, postagem.getModalidadeID());
+            st.setDate(4, postagem.getDate());
+            st.setInt(5, postagem.getUsuarioID());
             st.executeUpdate();
             st.close();
 
@@ -67,17 +66,17 @@ public class PostagemDAO extends DAO {
     }
 
     /**
-     * Recupera postagem do banco de dados pelo id
+     * Recupera postagem do banco de dados pelo id do usuario
      * 
-     * @param id <code>UUID</code> identificador da postagem
+     * @param id <code>int</code> identificador da postagem
      * @return <code>Postagem</code> recuperada
      */
-    public Postagem get(int id) {
+    public Postagem get(int usuarioID) {
         Postagem postagem = null;
 
         try {
             Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            String sql = "SELECT * FROM Postagem WHERE ID=" + id;
+            String sql = "SELECT * FROM Postagem WHERE usuarioID=" + usuarioID;
             ResultSet rs = st.executeQuery(sql);
 
             if (rs.next()) {
@@ -180,12 +179,11 @@ public class PostagemDAO extends DAO {
         boolean status = false;
 
         try {
-            String sql = "UPDATE Postagem SET conteudo=?, foto=?, modalidadeID=?";
+            String sql = "UPDATE Postagem SET conteudo=?, foto=?";
 
             PreparedStatement st = conexao.prepareStatement(sql);
             st.setString(1, postagem.getConteudo());
             st.setString(2, postagem.getFoto());
-            st.setObject(3, postagem.getModalidadeID());
             st.executeUpdate();
             st.close();
 
