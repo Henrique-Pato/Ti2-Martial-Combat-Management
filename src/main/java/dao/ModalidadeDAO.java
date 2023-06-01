@@ -49,7 +49,7 @@ public class ModalidadeDAO extends DAO {
       String sql = "INSERT INTO Modalidade (ID, nome) VALUES (?, ?)";
 
       PreparedStatement st = conexao.prepareStatement(sql);
-      st.setObject(1, modalidade.getId());
+      st.setInt(1, modalidade.getId());
       st.setString(2, modalidade.getNome());
       st.executeUpdate();
       st.close();
