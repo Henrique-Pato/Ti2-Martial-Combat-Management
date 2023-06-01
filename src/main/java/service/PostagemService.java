@@ -56,14 +56,13 @@ public class PostagemService {
   }
 
   public Object insert(Request request, Response response) {
-    int id = Integer.parseInt(request.params("ID"));
     String conteudo = request.queryParams("conteudo");
     int Uid = Integer.parseInt(request.params("usuarioID"));
     int Mid = Integer.parseInt(request.params("modalidadeID"));
 
     String resp = "";
 
-    Postagem postagem = new Postagem(id, conteudo, Mid, Uid);
+    Postagem postagem = new Postagem(conteudo, Mid, Uid);
 
     if (postagemDAO.insert(postagem) == true) {
       resp = "Postagem (" + id + ") inserido!";
@@ -81,8 +80,8 @@ public class PostagemService {
   }
 
   public Object get(Request request, Response response) {
-    int id = Integer.parseInt(request.params("ID"));
-    Postagem postagem = postagemDAO.get(id);
+    int Uid = Integer.parseInt(request.params("usuarioID"));
+    Postagem postagem = postagemDAO.get(Uid);
 
     if (postagem != null) {
       response.status(200); // success
