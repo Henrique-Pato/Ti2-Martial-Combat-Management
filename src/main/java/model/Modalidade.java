@@ -23,7 +23,7 @@ public class Modalidade {
 
     public Modalidade(String nome) {
         Random random = new Random();
-        this.id = random.nextInt();
+        this.id = Math.abs(random.nextInt());
         this.nome = nome;
     }
 
