@@ -46,7 +46,7 @@ public class ModalidadeDAO extends DAO {
     boolean status = false;
 
     try {
-      String sql = "INSERT INTO Modalidade (ID nome) VALUES (?, ?)";
+      String sql = "INSERT INTO Modalidade (ID, nome) VALUES (?, ?)";
 
       PreparedStatement st = conexao.prepareStatement(sql);
       st.setObject(1, modalidade.getId());
