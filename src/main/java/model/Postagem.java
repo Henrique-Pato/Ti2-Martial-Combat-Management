@@ -35,7 +35,7 @@ public class Postagem {
     this.modalidadeID = modalidadeID;
     this.usuarioID = usuarioID;
     Random random = new Random();
-    this.id = random.nextInt();
+    this.id = Math.abs(random.nextInt());
     this.date = new Date(Instant.now().toEpochMilli());
   }
 
