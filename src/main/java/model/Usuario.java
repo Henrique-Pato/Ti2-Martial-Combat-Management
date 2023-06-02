@@ -37,6 +37,18 @@ public class Usuario {
         Random random = new Random();
         this.id = Math.abs(random.nextInt());     
     }
+    
+    public Usuario(int id, String nome, String sobrenome,String email, String descricao, String foto, Date nascimento) {
+        this.id = id;
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.descricao = descricao;
+        this.email = email;
+        this.nascimento = nascimento;
+        this.foto = foto;
+    }
+    
+    
 
     //Gets
     public int getId() {

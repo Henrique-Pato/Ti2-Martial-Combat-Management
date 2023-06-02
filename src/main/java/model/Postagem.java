@@ -12,6 +12,7 @@ public class Postagem {
   private String conteudo;
   private String foto;
   private Date date;
+ 
 
   // Construtores
   public Postagem(){
@@ -38,6 +39,16 @@ public class Postagem {
     this.id = Math.abs(random.nextInt());
     this.date = new Date(Instant.now().toEpochMilli());
   }
+  
+  public Postagem(int id, String conteudo,  int modalidadeID,  int usuarioID, String foto) {
+	    this.id = id;
+	    this.conteudo = conteudo;
+	    this.foto = foto;
+	    this.modalidadeID = modalidadeID;
+	    this.date = new Date(Instant.now().toEpochMilli());
+	    this.usuarioID = usuarioID;
+	    
+	  }
 
   // Gets
   public int getId() {
@@ -90,3 +101,4 @@ public class Postagem {
   }
 
 }
+

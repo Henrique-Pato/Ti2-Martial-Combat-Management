@@ -101,12 +101,12 @@ public class UsuarioDAO extends DAO {
 
 		    try {
 		      Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		      String sql = "SELECT * FROM Usuario WHERE nome= '"+id+"'" ;
+		      String sql = "SELECT * FROM Usuario WHERE ID= '"+id+"'" ;
 		      ResultSet rs = st.executeQuery(sql);
 
 		      if (rs.next()) {
-		        
-		        usuario = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("email"), rs.getString("senha"));
+		        usuario = new Usuario(rs.getInt("ID"), rs.getString("nome"), rs.getString("sobrenome"), 
+		        		rs.getString("email"),rs.getString("descricao"), rs.getString("foto"), rs.getDate("nascimento"));
 		      }
 
 		      st.close();

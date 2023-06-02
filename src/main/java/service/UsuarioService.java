@@ -31,6 +31,7 @@ public class UsuarioService {
 		// makeform();
 	}
 
+	
 	public void makeForm() {
 		makeForm(FORM_INSERT, new Usuario(), FORM_ORDERBY_ID);
 	}
@@ -102,7 +103,10 @@ public class UsuarioService {
 			String authToken = "logado";
 			
 			response.status(201); // 201 Created
+			
 			response.cookie("authToken", authToken);
+			response.cookie("id", Integer.toString(usuario.getId()));
+			
 			response.redirect("/feed");
 			
 		} else {
@@ -126,9 +130,12 @@ public class UsuarioService {
 		
 			//String authToken = generateAuthToken(nome);
 			String authToken = "logado";
+			
 			response.cookie("authToken",authToken);
+			response.cookie("id", Integer.toString(usuario.getId()));
+			
 			response.redirect("/feed");			
-			//response.redirect("/feed" + usuario.getId());
+			
 		}	
 			
 		else {
@@ -202,9 +209,7 @@ public class UsuarioService {
 			response.status(404); // 404 Not found
 			resp = "Usuario (ID " + usuario.getId() + ") não encontrada!";
 		}
-		makeForm();
-		return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-				"<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
+		return null;
 	}
 
 	public Object delete(Request request, Response response) {
@@ -220,8 +225,6 @@ public class UsuarioService {
 			response.status(404); // 404 Not found
 			resp = "Usuario (" + id + ") não encontrada!";
 		}
-		makeForm();
-		return form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-				"<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
+		return null;
 	}
 }

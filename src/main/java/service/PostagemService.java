@@ -65,10 +65,10 @@ public class PostagemService {
     Postagem postagem = new Postagem(conteudo, Mid, Uid);
 
     if (postagemDAO.insert(postagem) == true) {
-      resp = "Postagem (" + id + ") inserido!";
+      resp = "Postagem (" + Uid + ") inserido!";
       response.status(201); // 201 Created
     } else {
-      resp = "Postagem (" + id + ") não inserido!";
+      resp = "Postagem (" + Uid + ") não inserido!";
       response.status(404); // 404 Not found
     }
 
@@ -80,8 +80,8 @@ public class PostagemService {
   }
 
   public Object get(Request request, Response response) {
-    int Uid = Integer.parseInt(request.params("usuarioID"));
-    Postagem postagem = postagemDAO.get(Uid);
+    int id = Integer.parseInt(request.params("usuarioID"));
+    Postagem postagem = postagemDAO.get(id);
 
     if (postagem != null) {
       response.status(200); // success
@@ -89,13 +89,9 @@ public class PostagemService {
     } else {
       response.status(404); // 404 Not found
       String resp = "Postagem " + id + " não encontrado.";
-
-      makeForm();
-      form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-          "<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
+  
     }
-
-    return form;
+    return null;
   }
 
   public Object getToUpdate(Request request, Response response) {
@@ -109,12 +105,9 @@ public class PostagemService {
       response.status(404); // 404 Not found
       String resp = "Postagem " + id + " não encontrado.";
       
-      makeForm();
-      form.replaceFirst("<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"\">",
-          "<input type=\"hidden\" id=\"msg\" name=\"msg\" value=\"" + resp + "\">");
     }
 
-    return form;
+    return null;
   }
 
   public Object getAll(Request request, Response response) {

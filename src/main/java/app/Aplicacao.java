@@ -1,8 +1,16 @@
-//Incompleto
-
 package app;
 
 import static spark.Spark.*;
+
+// Importações relacionadas a renderização de páginas html
+import spark.ModelAndView;
+import spark.template.mustache.MustacheTemplateEngine;
+
+// Usar map e hashmap
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import service.ComentarioService;
 import service.ModalidadeService;
@@ -10,7 +18,12 @@ import service.PostagemService;
 import service.ReacaoService;
 import service.SeguirService;
 import service.UsuarioService;
-import spark.Route;
+
+import dao.UsuarioDAO;
+import model.Usuario;
+
+import dao.PostagemDAO;
+import model.Postagem;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,7 +44,7 @@ public class Aplicacao {
     port(2223);
 
     staticFiles.location("/public");
-    
+        
     get("/cadastro", (request, response) -> {
     	  try {
     	    String filePath = Paths.get("src/main/resources/public/html/signup.html").toAbsolutePath().toString();
@@ -68,34 +81,47 @@ public class Aplicacao {
     post("/login", (request, response) -> usuarioService.get(request, response));
     
     get("/feed", (request, response) -> {
-    	String authToken = request.cookie("authToken");
-    	
-    	if(authToken != null && authToken.equals("logado")) {
-    		try {
-        		String filePath = Paths.get("src/main/resources/public/html/feed.html").toAbsolutePath().toString();
-          	    InputStream fileInputStream = new FileInputStream(filePath);
-          	    response.type("text/html");
-          	    return fileInputStream;
-        	}catch (IOException e) {
-          		  e.printStackTrace();
-          		  return "Erro ao carregar a página de feed";
-          	  }
-    	}
-    	
-    	else {
-    		response.redirect("/login");
-    	}
-    	return null;
-      	});
+        String authToken = request.cookie("authToken");
+
+        if (!(authToken != null && authToken.equals("logado"))) {
+        	 response.redirect("/login");
+             return null;
+        }
+        
+        Map<String, Object> model = new HashMap<>();
+        
+        int id = Integer.parseInt(request.cookie("id"));
+        
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        
+        Usuario usuario;
+        usuario = usuarioDAO.get(id);
+         
+        
+        PostagemDAO postagemDAO = new PostagemDAO();
+        List<Postagem> postagens = new ArrayList<Postagem>();
+        postagens = postagemDAO.get();
+        
+        // Informações pessoais do usuário
+        model.put("nome",usuario.getNome());  
+        model.put("sobrenome", usuario.getSobrenome());
+        model.put("descricao",usuario.getDescricao()); 
+        
+        model.put("postagens", postagens);
+        
+        return new ModelAndView(model, "feed.mustache");
+        
+    }, new MustacheTemplateEngine());
   	
     get("/logout", (request, response) -> {
     	response.removeCookie("authToken");
+    	response.removeCookie("id");
+    	
     	response.redirect("/login");
     	return null;
     });
   
-    
-    
+      
     get("/usuario/:ID", (request, response) -> usuarioService.get(request, response));
     get("/usuario/update/:ID", (request, response) -> usuarioService.update(request, response));
     get("/usuario/delete/:ID", (request, response) -> usuarioService.delete(request, response));

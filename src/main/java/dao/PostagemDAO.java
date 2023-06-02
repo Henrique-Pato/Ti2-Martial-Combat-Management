@@ -9,6 +9,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Usuario;
+import dao.UsuarioDAO;
+
 
 /**
  * PostagemDAO: herda DAO e utiliza model Postagem.
@@ -98,19 +101,13 @@ public class PostagemDAO extends DAO {
      * 
      * @return <code>List<Postagem></code> lista de postagens nao ordenada
      */
-    public List<Postagem> get() {
-        return get("");
-    }
-
+    
     /**
      * Chama funcao <code>get(String orderBy)</code>
      * passando id como orderBy
      * 
      * @return <code>List<Postagem></code> lista de postagens ordenada pelo id
      */
-    public List<Postagem> getOrderByID() {
-        return get("ID");
-    }
 
     /**
      * Ordena lista de postagens pelo orderBy solicitado
@@ -118,7 +115,9 @@ public class PostagemDAO extends DAO {
      * @param orderBy <code>String</code> chave de ordenacao
      * @return <code>List<Postagem></code> lista de postagens
      */
-    private List<Postagem> get(String orderBy) {
+    
+    /*
+    public List<Postagem> get(String orderBy) {
         List<Postagem> postagens = new ArrayList<Postagem>();
 
         try {
@@ -141,7 +140,33 @@ public class PostagemDAO extends DAO {
 
         return postagens;
     }
+    */
 
+    public List<Postagem> get() {
+        List<Postagem> postagens = new ArrayList<Postagem>();
+
+        try {
+            Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String sql = "SELECT * FROM Postagem";
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+            	     
+                Postagem p = new Postagem(rs.getInt("ID"), rs.getString("conteudo"), rs.getInt("modalidadeID"), rs.getInt("usuarioID"), rs.getString("foto"));
+
+                postagens.add(p);
+            }
+
+            st.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        return postagens;
+    }
+    
+    
+    
     public Postagem[] list(int id) {
         Postagem[] postagens = new Postagem[100];
 
